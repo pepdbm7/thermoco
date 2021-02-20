@@ -12,7 +12,7 @@ import { getToken } from "../redux/auth/authSlice";
 import { ThemeProvider } from "@material-ui/core/styles";
 
 //layout components:
-import { Navbar } from "./layout";
+import { PrivateRoute } from "./layout";
 
 //page components:
 import HomePage from "./Home/HomePage";
@@ -32,25 +32,14 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <Switch>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
-
-          {isAuthorized ? (
-            <Route>
-              <Navbar />
-              <div className="container">
-                <Switch>
-                  <Route exact path="/home" component={HomePage} />
-                  <Route>
-                    <ErrorPage />
-                  </Route>
-                </Switch>
-              </div>
-            </Route>
+          {!isAuthorized ? (
+            <Redirect exact path="/" to="/login" />
           ) : (
-            <Redirect to="/login" />
+            <Redirect exact path="/" to="/home" />
           )}
+          <Route exact path="/login" component={LoginPage} />
+          <PrivateRoute exact path={"/home"} component={HomePage} />
+          <Route component={ErrorPage} />
         </Switch>
       </Router>
     </ThemeProvider>

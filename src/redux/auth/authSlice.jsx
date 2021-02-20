@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import qs from "qs";
 import api from "../../utils/api";
 
-export const tryLogin = createAsyncThunk("", async (loginData) => {
+export const tryLogin = createAsyncThunk("getToken", async (loginData) => {
   const {
     data: { access_token = "" },
   } = await api.post(`auth/login`, qs.stringify(loginData), {

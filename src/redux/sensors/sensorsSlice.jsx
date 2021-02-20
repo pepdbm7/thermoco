@@ -5,7 +5,7 @@ import api from "../../utils/api";
 //   return bool;
 // };
 
-export const fetchSensors = createAsyncThunk("", async (token) => {
+export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
   const { data } = await api.get(`api/v1/sensors`, {
     method: "GET",
     headers: {
