@@ -15,11 +15,7 @@ export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
 
   console.log("SENSORS", data);
 
-  return {
-    fulfilled: !!data,
-    sensors: data,
-    rejected: !data || (data && !data.length),
-  };
+  return data;
 });
 
 // export const fetchSensor = createAsyncThunk("", async (sensorId) => {
@@ -49,30 +45,26 @@ export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
 //     return response.data;
 //   }
 // );
+
 const sensorsSlice = createSlice({
   name: "sensors",
   initialState: {
     sensors: [],
     selectedSensor: {},
     loading: true,
-    status: {
-      type: "idle",
-      error: null,
-    },
+    error: "",
   },
   reducers: {},
   extraReducers: {
-    // [setLoader]: (state, action) => {
-    //   state.loading = action.payload.loading;
-    // },
-    [fetchSensors.fullfilled]: (state, action) => {
-      state.sensors = action.payload.sensors;
-      state.status.type = "succeeded";
+    [fetchSensors.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [fetchSensors.fulfilled]: (state, action) => {
+      state.sensors = action.payload;
       state.loading = false;
     },
     [fetchSensors.rejected]: (state, action) => {
-      state.sensors = action.payload.sensors;
-      state.status.type = "failed";
+      state.error = action.error.message;
       state.loading = false;
     },
 

@@ -27,7 +27,11 @@ const authSlice = createSlice({
       error: null,
     },
   },
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.token = "";
+    },
+  },
   extraReducers: {
     [tryLogin.fulfilled]: (state, action) => {
       state.status.type = "succeeded";
@@ -43,3 +47,4 @@ const authSlice = createSlice({
 export default authSlice.reducer;
 
 export const getToken = (state) => state.auth.token;
+export const { logout } = authSlice.actions;

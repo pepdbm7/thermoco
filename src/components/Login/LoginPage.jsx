@@ -1,13 +1,13 @@
 import { useState, memo } from "react";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 
 //components:
 import { Field, Form, Formik } from "formik";
 import { CircularProgress } from "@material-ui/core";
 
 //redux:
-import { tryLogin, getToken } from "../../redux/auth/authSlice";
+import { tryLogin } from "../../redux/auth/authSlice";
 
 //styles:
 import "./index.css";
@@ -38,7 +38,7 @@ const LoginPage = memo(() => {
 
   let container;
 
-  if (authStatus.type === "idle") {
+  if (authStatus.type === "idle" || !token) {
     container = (
       <div className="card-body">
         <div className="row">
