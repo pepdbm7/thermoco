@@ -1,21 +1,37 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 
-// export const setLoader = (bool) => {
-//   return bool;
-// };
+const initialState = {
+  sensors: [],
+  selectedSensor: {},
+  loading: true,
+  error: "",
+};
 
 export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
-  const { data } = await api.get(`api/v1/sensors`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  console.log("SENSORS", data);
-
-  return data;
+  debugger;
+  return api
+    .get(`api/v1/sensors`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      const { data = [], error = "" } = response;
+      debugger;
+      return { data };
+    })
+    .catch((err) => {
+      debugger;
+      if (
+        err.message &&
+        err.message.includes("Request failed with status code 401")
+      ) {
+        return { error: "Your session has expired, you have to logout!" };
+      }
+      return { error: err.message };
+    });
 });
 
 // export const fetchSensor = createAsyncThunk("", async (sensorId) => {
@@ -48,22 +64,26 @@ export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
 
 const sensorsSlice = createSlice({
   name: "sensors",
-  initialState: {
-    sensors: [],
-    selectedSensor: {},
-    loading: true,
-    error: "",
+  initialState,
+  reducers: {
+    clearPage: (state) => {
+      debugger;
+      state = initialState;
+    },
   },
-  reducers: {},
   extraReducers: {
-    [fetchSensors.pending]: (state, action) => {
+    [fetchSensors.pending]: (state) => {
+      debugger;
       state.loading = true;
     },
     [fetchSensors.fulfilled]: (state, action) => {
-      state.sensors = action.payload;
+      debugger;
+      state.sensors = action.payload.data;
+      state.error = action.payload.error;
       state.loading = false;
     },
     [fetchSensors.rejected]: (state, action) => {
+      debugger;
       state.error = action.error.message;
       state.loading = false;
     },
@@ -93,3 +113,4 @@ export default sensorsSlice.reducer;
 export const getAllSensors = (state) => state.sensors.sensors;
 export const getLoading = (state) => state.sensors.loading;
 export const selectSelectedSensor = (state) => state.sensors.selectedSensor;
+export const { clearPage } = sensorsSlice.actions;

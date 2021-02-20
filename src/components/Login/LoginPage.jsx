@@ -130,7 +130,7 @@ const LoginPage = memo(() => {
         </div>
       </div>
     );
-    if (token) setTimeout(() => history.push("/home"), 2000);
+    if (token) setTimeout(() => history.push("/home"), 1000);
   } else if (authStatus.type === "error") {
     container = <div className="card-body">:({authStatus.error}</div>;
   }
