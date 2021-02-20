@@ -21,7 +21,7 @@ export const tryLogin = createAsyncThunk("", async (loginData) => {
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    token: null,
+    token: "",
     status: {
       type: "idle",
       error: null,
@@ -41,3 +41,5 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
+
+export const getToken = (state) => state.auth.token;

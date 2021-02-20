@@ -1,13 +1,24 @@
-import { Field, Form, Formik } from "formik";
-import { useState } from "react";
-import { tryLogin } from "../../redux/auth/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, memo } from "react";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-export default () => {
+//components:
+import { Field, Form, Formik } from "formik";
+import { CircularProgress } from "@material-ui/core";
+
+//redux:
+import { tryLogin, getToken } from "../../redux/auth/authSlice";
+
+//styles:
+import "./index.css";
+
+const LoginPage = memo(() => {
   const [usernameInput, setUsernameInput] = useState("test");
   const [passwordInput, setPasswordInput] = useState("1234");
   const [formDisabled, setFormDisabled] = useState(false);
+  const token = useSelector((state) => state.auth.token);
+
+  console.log("token from loginpage", token);
 
   const authStatus = useSelector((state) => state.auth.status);
 
@@ -24,12 +35,14 @@ export default () => {
 
     dispatch(tryLogin(loginParams));
   };
+
   let container;
+
   if (authStatus.type === "idle") {
     container = (
-      <div className={"card-body"}>
-        <div className={"row"}>
-          <div className={"col-6"}>
+      <div className="card-body">
+        <div className="row">
+          <div className="col-6">
             <h2 className="text-center">Account login</h2>
             <Formik
               initialValues={{
@@ -84,18 +97,14 @@ export default () => {
             <div className="d-flex justify-content-center align-items-center flex-column py-3">
               <button
                 disabled
-                className={
-                  "btn btn-danger d-flex justify-content-between align-items-center mr-2 mb-2"
-                }
+                className="btn btn-danger d-flex justify-content-between align-items-center mr-2 mb-2"
               >
                 <i className="fab fa-google" />
                 Google Account
               </button>
               <button
                 disabled
-                className={
-                  "btn btn-primary d-flex justify-content-between align-items-center mr-2 mb-2"
-                }
+                className="btn btn-primary d-flex justify-content-between align-items-center mr-2 mb-2"
               >
                 <i className="fab fa-microsoft" />
                 Microsoft Account
@@ -107,39 +116,32 @@ export default () => {
     );
   } else if (authStatus.type === "succeeded") {
     container = (
-      <div className={"card-body"}>
+      <div className="card-body success_login_message">
         <h3>
-          <code>{usernameInput}</code> has been logged successfull
+          <code>{usernameInput}</code> has been logged in successfully
         </h3>
-        <div className={"ms-3 mt-2 text-secondary"}>
-          <i className="fas fa-spinner fa-spin" /> Loading...
+        <div
+          className={
+            "ms-3 mt-2 text-success w-100 py-4 d-flex justify-content-center align-items-center"
+          }
+        >
+          {" "}
+          <CircularProgress />
         </div>
       </div>
     );
-    setTimeout(() => history.push("/"), 2000);
-  } else if (authStatus.type === "loading") {
-    container = (
-      <div className={"card-body"}>
-        <div className={"ms-3 mt-2 text-secondary"}>
-          <i className="fas fa-spinner fa-spin" /> Loading...
-        </div>
-      </div>
-    );
+    if (token) setTimeout(() => history.push("/home"), 2000);
   } else if (authStatus.type === "error") {
-    container = <div className={"card-body"}>:({authStatus.error}</div>;
+    container = <div className="card-body">:({authStatus.error}</div>;
   }
 
   return (
-    <div
-      className={"w-100 d-flex justify-content-center align-items-center"}
-      style={{
-        height: "100vh",
-        background: "linear-gradient(to right, #00f260, #0575e6)",
-      }}
-    >
-      <div className={"col-11 col-sm-9 col-md-6 col-lg-6 col-xl-4"}>
-        <div className={"card"}>{container}</div>
+    <div className="background_login">
+      <div className="col-11 col-sm-9 col-md-6 col-lg-6 col-xl-4">
+        <div className="card">{container}</div>
       </div>
     </div>
   );
-};
+});
+
+export default LoginPage;

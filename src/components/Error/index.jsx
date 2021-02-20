@@ -8,7 +8,7 @@ const ErrorPage = () => {
       <h1>Something went wrong</h1>
       <button
         className="btn btn-primary btn-lg"
-        onClick={() => history.push("/")}
+        onClick={() => history.push("/home")}
       >
         Go To Home Page
       </button>

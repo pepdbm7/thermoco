@@ -1,19 +1,60 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+//redux:
+import { fetchSensors, getAllSensors } from "../../redux/sensors/sensorsSlice";
+import { getToken } from "../../redux/auth/authSlice";
+
+//components:
+import { CircularProgress } from "@material-ui/core";
+
+//styles:
+import "./index.css";
+
 const Homepage = () => {
+  const dispatch = useDispatch();
+  const token = useSelector(getToken);
+
+  const sensors = useSelector(getAllSensors);
+  const loading = useSelector((state) => state.sensors.loading);
+
+  useEffect(() => {
+    dispatch(fetchSensors(token));
+  }, []);
+
+  useEffect(() => {
+    console.log({ loading });
+  }, [loading]);
+
+  useEffect(() => {
+    console.log({ sensors });
+  }, [sensors]);
+
   return (
-    <div className="jumbotron">
-      <h1 className="display-4">Hello, world!</h1>
-      <p className="lead">
-        This is a simple hero unit, a simple jumbotron-style component for
-        calling extra attention to featured content or information.
-      </p>
-      <hr className="my-4" />
-      <p>
-        It uses utility classes for typography and spacing to space content out
-        within the larger container.
-      </p>
-      <a className="btn btn-primary btn-lg" href="#" role="button">
-        Learn more
-      </a>
+    <div className="card card-custom gutter-b shadow col-12">
+      <div className="card-header flex-wrap pt-6 pb-0 border-bottom border-gray">
+        <div className="card-title">SENSORS</div>
+      </div>
+      <div className="card-body">
+        {loading ? (
+          <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+            <CircularProgress />
+          </div>
+        ) : (
+          <>
+            {sensors.map((sensor) => (
+              <div
+                key={sensor.id}
+                className="alert alert-light w-100 d-flex flex-column"
+              >
+                <h5>{sensor.description}</h5>
+                <span>Active: {sensor.isActive ? "Yes" : "No"}</span>
+                <span>Sampling Period: {sensor.samplingPeriod}</span>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
     </div>
   );
 };

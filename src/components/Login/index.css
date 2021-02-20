@@ -1,0 +1,11 @@
+.background_login {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, #1d2124e6, rgb(5, 117, 230));
+}
+
+.success_login_message {
+  height: fit-content;
+}

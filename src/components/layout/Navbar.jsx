@@ -5,39 +5,20 @@ export const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className={"container"}>
-        <a className="navbar-brand" href="#">
-          ThermoCo Admin
-        </a>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <nav className="nav navbar-nav nav-fill">
-            <NavLink
-              to="/"
-              exact
-              className="nav-link"
-              activeClassName={"active"}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/health"
-              className="nav-link"
-              activeClassName={"active"}
-            >
-              Health
-            </NavLink>
-          </nav>
+      <div className="container d-flex justify-content-between">
+        <span className="navbar-brand">ThermoCo Admin</span>
+        <div className="d-flex ml-auto">
+          <NavLink
+            to="/home"
+            exact
+            className="nav-link"
+            activeClassName="active"
+          >
+            Home
+          </NavLink>
+          <NavLink to="/health" className="nav-link" activeClassName="active">
+            Health
+          </NavLink>
         </div>
         <div className={"pull-right text-light text-right"}>
           {REACT_APP_VERSION || ""}
