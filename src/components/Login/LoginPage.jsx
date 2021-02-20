@@ -18,8 +18,6 @@ const LoginPage = memo(() => {
   const [formDisabled, setFormDisabled] = useState(false);
   const token = useSelector((state) => state.auth.token);
 
-  console.log("token from loginpage", token);
-
   const authStatus = useSelector((state) => state.auth.status);
 
   const history = useHistory();

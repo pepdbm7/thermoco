@@ -1,3 +1,7 @@
 .card-body {
   min-height: 40rem;
 }
+
+.btn-danger {
+  height: fit-content;
+}

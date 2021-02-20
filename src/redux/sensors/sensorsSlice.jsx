@@ -9,7 +9,6 @@ const initialState = {
 };
 
 export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
-  debugger;
   return api
     .get(`api/v1/sensors`, {
       method: "GET",
@@ -18,12 +17,10 @@ export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
       },
     })
     .then((response) => {
-      const { data = [], error = "" } = response;
-      debugger;
+      const { data = [] } = response;
       return { data };
     })
     .catch((err) => {
-      debugger;
       if (
         err.message &&
         err.message.includes("Request failed with status code 401")
@@ -54,36 +51,43 @@ export const fetchSensors = createAsyncThunk("getSensors", async (token) => {
 //     return response.data;
 //   }
 // );
-// export const deleteSensor = createAsyncThunk(
-//   "sensors/deleteSensor",
-//   async (sensorId) => {
-//     const response = await api.delete(`api/access/sensors/${sensorId}`);
-//     return response.data;
-//   }
-// );
+
+export const deleteSensor = createAsyncThunk(
+  "sensors/deleteSensor",
+  async ({ token, id }) => {
+    debugger;
+    return api
+      .delete(`/api/v1/sensors/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => ({ id }))
+      .catch((err) => {
+        return { error: err.message };
+      });
+  }
+);
 
 const sensorsSlice = createSlice({
   name: "sensors",
   initialState,
   reducers: {
     clearPage: (state) => {
-      debugger;
       state = initialState;
     },
   },
   extraReducers: {
     [fetchSensors.pending]: (state) => {
-      debugger;
       state.loading = true;
     },
     [fetchSensors.fulfilled]: (state, action) => {
-      debugger;
       state.sensors = action.payload.data;
       state.error = action.payload.error;
       state.loading = false;
     },
     [fetchSensors.rejected]: (state, action) => {
-      debugger;
       state.error = action.error.message;
       state.loading = false;
     },
@@ -97,9 +101,13 @@ const sensorsSlice = createSlice({
     //   state.loading = false;
     // },
 
-    // [deleteSensor]: (state, action) => {
-    //   state.loading = false;
-    // },
+    [deleteSensor.fulfilled]: (state, action) => {
+      debugger;
+      state.sensors = state.sensors.filter(
+        (sensor) => sensor.id === action.payload.id
+      );
+      state.loading = false;
+    },
 
     // [updateSensor]: (state, action) => {
     //   state.selectedSensor = action.payload.data;

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 //redux:
 import {
   fetchSensors,
+  deleteSensor,
   getAllSensors,
   clearPage,
 } from "../../redux/sensors/sensorsSlice";
@@ -56,11 +57,23 @@ const Homepage = () => {
                   sensors.map((sensor) => (
                     <div
                       key={sensor.id}
-                      className="alert alert-light w-100 d-flex flex-column"
+                      className="alert alert-light w-100 d-flex flex-column border border-gray"
                     >
                       <h5>{sensor.description}</h5>
-                      <span>Active: {sensor.isActive ? "Yes" : "No"}</span>
-                      <span>Sampling Period: {sensor.samplingPeriod}</span>
+                      <div className="d-flex justify-content-between">
+                        <div className="d-flex flex-column">
+                          <span>Active: {sensor.isActive ? "Yes" : "No"}</span>
+                          <span>Sampling Period: {sensor.samplingPeriod}</span>
+                        </div>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() =>
+                            dispatch(deleteSensor({ token, id: sensor.id }))
+                          }
+                        >
+                          X
+                        </button>
+                      </div>
                     </div>
                   ))}
               </>
