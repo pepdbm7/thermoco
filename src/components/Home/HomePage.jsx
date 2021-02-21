@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //redux:
@@ -13,6 +13,7 @@ import { getToken } from "../../redux/auth/authSlice";
 //components:
 import { CircularProgress } from "@material-ui/core";
 import { Navbar } from "../layout";
+import { CreateModal } from "../modals";
 
 //styles:
 import "./index.css";
@@ -21,9 +22,19 @@ const Homepage = () => {
   const dispatch = useDispatch();
   const token = useSelector(getToken);
 
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
   const sensors = useSelector(getAllSensors);
   const loading = useSelector((state) => state.sensors.loading);
   const error = useSelector((state) => state.sensors.error);
+
+  useEffect(() => {
+    console.log({ error });
+  }, [error]);
+
+  useEffect(() => {
+    console.log({ sensors });
+  }, [sensors]);
 
   useEffect(() => {
     dispatch(fetchSensors(token));
@@ -31,14 +42,27 @@ const Homepage = () => {
     return () => dispatch(clearPage());
   }, []);
 
+  const handleDelete = (id) => {
+    dispatch(deleteSensor({ token, id }));
+  };
+
   return (
     <>
       <Navbar />
       <div className="container p-4">
         <div className="card card-custom gutter-b shadow col-12">
           <div className="card-header bg-white flex-wrap pt-6 pb-0 border-bottom border-gray">
-            <div className="card-title text-muted font-weight-bold">
+            <div className="card-title text-muted font-weight-bold d-flex justify-content-between flex-wrap">
               SENSORS
+              <div className="d-flex font-weight-boldalign-items-center mb-2">
+                Add new
+                <button
+                  className="btn btn-sm btn-light ml-2"
+                  onClick={() => setShowCreateModal(true)}
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
           <div className="card-body">
@@ -46,12 +70,11 @@ const Homepage = () => {
               <div className="w-100 h-100 d-flex justify-content-center align-items-center">
                 <CircularProgress />
               </div>
-            ) : error ? (
-              <b className="w-100 h-100 d-flex justify-content-center align-items-center text-muted">
-                {error}
-              </b>
             ) : (
               <>
+                <b className="w-100 h-100 d-flex justify-content-center align-items-center text-muted">
+                  {error}
+                </b>
                 {Array.isArray(sensors) &&
                   sensors.length > 0 &&
                   sensors.map((sensor) => (
@@ -67,9 +90,7 @@ const Homepage = () => {
                         </div>
                         <button
                           className="btn btn-danger btn-sm"
-                          onClick={() =>
-                            dispatch(deleteSensor({ token, id: sensor.id }))
-                          }
+                          onClick={() => handleDelete(sensor.id)}
                         >
                           X
                         </button>
@@ -81,6 +102,12 @@ const Homepage = () => {
           </div>
         </div>
       </div>
+      {showCreateModal ? (
+        <CreateModal
+          show={showCreateModal}
+          close={() => setShowCreateModal(false)}
+        />
+      ) : null}
     </>
   );
 };
